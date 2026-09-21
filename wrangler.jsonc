@@ -12,7 +12,7 @@
     }
   ],
   "vars": {
-    "APP_NAME": "Mari CRM",
+    "APP_NAME": "mariscrm-db",
     "APP_ORIGIN": "http://localhost:8787"
   }
 }
