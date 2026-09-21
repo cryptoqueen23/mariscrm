@@ -114,10 +114,64 @@ async function signup(request: Request, env: Env, slug: string) {
   return json({ ok: true, contactId }, 201);
 }
 
+
+function scoopJoinPage() {
+  return new Response(\`<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Join Coryell County Scoop</title>
+<style>
+:root{font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#17202a;background:#f5f2eb}
+*{box-sizing:border-box}body{margin:0}.shell{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+.hero{padding:clamp(40px,7vw,90px);background:#162635;color:#fff;display:flex;flex-direction:column;justify-content:center}
+.kicker{font-size:.78rem;letter-spacing:.18em;text-transform:uppercase;font-weight:800;opacity:.72}
+h1{font-family:Georgia,serif;font-size:clamp(3rem,7vw,6.2rem);line-height:.92;margin:.3em 0}.hero p{font-size:1.1rem;line-height:1.65;max-width:580px;color:#dce5ea}
+.formside{padding:clamp(28px,6vw,80px);display:flex;align-items:center}.card{width:min(620px,100%);margin:auto;background:#fff;border:1px solid #ded9cf;border-radius:22px;padding:clamp(24px,5vw,46px);box-shadow:0 20px 60px rgba(23,32,42,.08)}
+h2{font-family:Georgia,serif;font-size:2rem;margin:0 0 8px}.intro{color:#5b6470;margin:0 0 28px;line-height:1.5}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}.full{grid-column:1/-1}label.field{display:block;font-weight:700;font-size:.86rem}
+input,select{width:100%;margin-top:7px;padding:13px 14px;border:1px solid #cfc9bf;border-radius:10px;font:inherit;background:#fff;color:#17202a}
+.check{display:flex;gap:10px;align-items:flex-start;font-size:.88rem;line-height:1.4;color:#444;margin-top:14px}.check input{width:auto;margin-top:3px}
+button{width:100%;border:0;border-radius:10px;padding:15px 18px;margin-top:22px;background:#162635;color:#fff;font-weight:800;font-size:1rem;cursor:pointer}
+button:disabled{opacity:.6;cursor:wait}.privacy{font-size:.76rem;line-height:1.5;color:#747474;margin-top:16px}.msg{display:none;margin-top:16px;padding:13px;border-radius:10px}.ok{display:block;background:#eaf7ee;color:#155b2e}.err{display:block;background:#fff0f0;color:#8b2020}
+@media(max-width:850px){.shell{grid-template-columns:1fr}.hero{min-height:auto;padding:48px 28px}.formside{padding:24px 16px 48px}.grid{grid-template-columns:1fr}.full{grid-column:auto}}
+</style>
+</head>
+<body><main class="shell">
+<section class="hero"><div class="kicker">Coryell County Scoop</div><h1>Stay in<br>the Scoop.</h1><p>Facebook is where we gather. This independent list gives our community another way to stay connected when a social platform is unavailable or simply doesn't show you an important update.</p><p><strong>Free to join. Local. Independent.</strong></p></section>
+<section class="formside"><div class="card"><h2>Join the community list</h2><p class="intro">Choose how you'd like to hear from Coryell County Scoop. Mobile number is optional unless you request text alerts.</p>
+<form id="join">
+<div class="grid">
+<label class="field">First name<input name="firstName" autocomplete="given-name" required></label>
+<label class="field">Last name<input name="lastName" autocomplete="family-name" required></label>
+<label class="field full">Email address<input name="email" type="email" autocomplete="email" required></label>
+<label class="field">Mobile number <span style="font-weight:400">(optional)</span><input name="phone" type="tel" autocomplete="tel" placeholder="(254) 555-1234"></label>
+<label class="field">ZIP code<input name="postalCode" autocomplete="postal-code" inputmode="numeric"></label>
+<label class="field">City<input name="city" autocomplete="address-level2"></label>
+<label class="field">Preferred language<select name="language"><option value="en">English</option><option value="es">Español</option></select></label>
+</div>
+<label class="check"><input name="emailConsent" type="checkbox" checked><span>Yes, send me Coryell County Scoop email updates. I can unsubscribe at any time.</span></label>
+<label class="check"><input name="smsConsent" type="checkbox"><span>Yes, I agree to receive recurring Coryell County Scoop text alerts at the number provided. Consent is not a condition of joining. Message frequency varies. Message and data rates may apply. Reply STOP to opt out, HELP for help.</span></label>
+<button id="submit" type="submit">JOIN THE SCOOP</button>
+<div id="msg" class="msg" role="status" aria-live="polite"></div>
+<p class="privacy">Your information is used to provide the updates you request. It will not be sold. You may withdraw email or SMS consent at any time.</p>
+</form></div></section>
+</main>
+<script>
+const form=document.getElementById('join'),msg=document.getElementById('msg'),btn=document.getElementById('submit');
+form.addEventListener('submit',async(e)=>{e.preventDefault();msg.className='msg';msg.textContent='';btn.disabled=true;btn.textContent='JOINING…';
+const fd=new FormData(form);const payload={firstName:fd.get('firstName'),lastName:fd.get('lastName'),email:fd.get('email'),phone:fd.get('phone'),city:fd.get('city'),postalCode:fd.get('postalCode'),language:fd.get('language'),emailConsent:fd.has('emailConsent'),smsConsent:fd.has('smsConsent')};
+try{const r=await fetch('/api/public/forms/join-scoop/signup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to join right now.');form.reset();msg.textContent="You're in the Scoop. Welcome!";msg.className='msg ok';}
+catch(err){msg.textContent=err.message||'Something went wrong. Please try again.';msg.className='msg err';}
+finally{btn.disabled=false;btn.textContent='JOIN THE SCOOP';}});
+</script></body></html>\`,{headers:{"content-type":"text/html; charset=utf-8","cache-control":"no-store"}});
+}
+
 export default {
   async fetch(request: Request, env: Env): Promise<Response> {
     const url = new URL(request.url);
     if (request.method === "GET" && url.pathname === "/api/health") return health(env);
+    if (request.method === "GET" && (url.pathname === "/join/scoop" || url.pathname === "/join/scoop/")) return scoopJoinPage();
 
     const formMatch = url.pathname.match(/^\/api\/public\/forms\/([^/]+)$/);
     if (request.method === "GET" && formMatch) return publicForm(env, decodeURIComponent(formMatch[1]));
