@@ -1,0 +1,18 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "mariscrm",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-09-21",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "mariscrm-db",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "vars": {
+    "APP_NAME": "Mari CRM",
+    "APP_ORIGIN": "http://localhost:8787"
+  }
+}
