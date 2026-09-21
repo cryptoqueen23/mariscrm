@@ -22,3 +22,5 @@ Independent, lightweight audience CRM for Mari's projects.
 - Source of truth: Mari CRM database, not Facebook or any individual website
 
 See docs/ARCHITECTURE.md and db/schema.sql.
+
+deployment trigger
