@@ -116,7 +116,7 @@ async function signup(request: Request, env: Env, slug: string) {
 
 
 function scoopJoinPage() {
-  return new Response(\`<!doctype html>
+  return new Response(`<!doctype html>
 <html lang="en">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -164,7 +164,7 @@ const fd=new FormData(form);const payload={firstName:fd.get('firstName'),lastNam
 try{const r=await fetch('/api/public/forms/join-scoop/signup',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok)throw new Error(d.error||'Unable to join right now.');form.reset();msg.textContent="You're in the Scoop. Welcome!";msg.className='msg ok';}
 catch(err){msg.textContent=err.message||'Something went wrong. Please try again.';msg.className='msg err';}
 finally{btn.disabled=false;btn.textContent='JOIN THE SCOOP';}});
-</script></body></html>\`,{headers:{"content-type":"text/html; charset=utf-8","cache-control":"no-store"}});
+</script></body></html>`,{headers:{"content-type":"text/html; charset=utf-8","cache-control":"no-store"}});
 }
 
 export default {
